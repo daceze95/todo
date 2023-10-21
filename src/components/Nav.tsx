@@ -14,12 +14,12 @@ const Nav = () => {
   const logoStyle = {
     fontSize: '1.5rem',
     fontStyle: 'bold',
-    border: "4px dotted blue",
-    padding: "5px 10px"
+    border: "4px double blue",
+    padding: "2px 10px"
   };
   return (
     <div style={style}>
-      <span style={logoStyle}>Arinze's Todo</span>
+      <span style={logoStyle}>TODO</span>
     </div>
   );
 };
