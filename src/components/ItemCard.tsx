@@ -4,9 +4,19 @@ interface ItemCardProp {
   DB: { id: number; task: string; isCompleted: boolean }[];
   completeTask: (id: number) => void;
   deleteTodo: (e: { preventDefault: () => void }, id: number) => void;
+  editTodo: (e: { preventDefault: () => void }, id: number) => void;
+  editBtn: boolean;
+  cancelEdit: (e: { preventDefault: () => void }, id: number) => void;
 }
 
-const ItemCard = ({ DB, completeTask, deleteTodo }: ItemCardProp) => {
+const ItemCard = ({
+  DB,
+  completeTask,
+  deleteTodo,
+  editTodo,
+  editBtn,
+  cancelEdit
+}: ItemCardProp) => {
   return (
     <div className='h-[380px] overflow-auto'>
       {DB.map((todo) => (
@@ -22,9 +32,21 @@ const ItemCard = ({ DB, completeTask, deleteTodo }: ItemCardProp) => {
           </div>
 
           <div className='flex py-2 w-full justify-center gap-4'>
-            <Button color={'text-black'} bg={'bg-white'}>
-              Edit
-            </Button>
+            {!editBtn ? (
+              <Button
+                color={'text-black'}
+                bg={'bg-white'}
+                onClick={(e) => editTodo(e, todo.id)}>
+                Edit
+              </Button>
+            ) : (
+              <Button
+                color={'text-black'}
+                bg={'bg-white'}
+                onClick={(e) => cancelEdit(e, todo.id)}>
+                Cancel Edit
+              </Button>
+            )}
             <Button
               color={'text-white'}
               bg={'bg-red-500'}

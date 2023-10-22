@@ -6,6 +6,8 @@ interface AddItemProps {
   handleChange: (e: { target: { value: SetStateAction<string> } }) => void;
   isFieldEmpty: boolean;
   handleSubmit: (e: { preventDefault: () => void }) => void;
+  editBtn: boolean;
+  handleEdit: (e: { preventDefault: () => void }) => void;
 }
 
 const AddItem = ({
@@ -13,6 +15,8 @@ const AddItem = ({
   handleChange,
   isFieldEmpty,
   handleSubmit,
+  editBtn,
+  handleEdit,
 }: AddItemProps) => {
   return (
     <div className='my-4 flex flex-col gap-4'>
@@ -31,9 +35,15 @@ const AddItem = ({
           </small>
         )}
       </div>
-      <Button color={'text-white'} onClick={handleSubmit}>
-        Add
-      </Button>
+      {!editBtn ? (
+        <Button color={'text-white'} onClick={handleSubmit}>
+          Add
+        </Button>
+      ) : (
+        <Button color={'text-white'} onClick={handleEdit}>
+          Confirm Edit
+        </Button>
+      )}
     </div>
   );
 };

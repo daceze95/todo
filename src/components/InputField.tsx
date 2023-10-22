@@ -9,10 +9,10 @@ import FilterButtons from './FilterButtons';
 const InputField = () => {
   const [inputValue, setInputValue] = useState('');
   const [activeBtn, setActiveBtn] = useState(1);
+  const [editBtn, setEditBtn] = useState(false);
+  const [todoId, setTodoId] = useState(0);
   const [isFieldEmpty, setIsFieldEmpty] = useState(false);
-  const [DB, setDB] = useState<
-    { id: number; task: string; isCompleted: boolean }[]
-  >(JSON.parse(localStorage.getItem('DataBase')) || []);
+  const [DB, setDB] = useState<{ id: number; task: string; isCompleted: boolean }[]>(JSON.parse(localStorage.getItem('DataBase')) || []);
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -31,6 +31,20 @@ const InputField = () => {
       setIsFieldEmpty(true);
     }
   };
+  const handleEdit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    if (inputValue.trim()) {
+
+      const result = DB.map(todo => todo.id === todoId ? {...todo, task: inputValue} : todo)
+      setIsFieldEmpty(false);
+      setDB(result);
+      setInputValue('');
+      setEditBtn(false)
+    } else {
+      setIsFieldEmpty(true);
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem('DataBase', JSON.stringify(DB));
@@ -38,7 +52,7 @@ const InputField = () => {
 
   const completeTask = (id: number) => {
     const updatedTodos = DB.map((todo) =>
-      todo.id === id ? { ...todo, isCompleted: true } : todo
+      todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
     );
     setDB(updatedTodos);
     localStorage.setItem('DataBase', JSON.stringify(updatedTodos));
@@ -55,10 +69,27 @@ const InputField = () => {
     return true;
   });
 
+  const editTodo = (e: { preventDefault: () => void }, id: number) => {
+    e.preventDefault();
+
+    DB.map((todo) => {
+      if(todo.id === id){
+        setInputValue(todo.task);
+        setTodoId(todo.id);
+        setEditBtn(true);
+      }
+    })
+  };
+
+  const cancelEdit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    setInputValue('');
+    setEditBtn(false);
+  };
+
   const deleteTodo = (e: { preventDefault: () => void }, id: number) => {
     e.preventDefault();
-     setDB(DB.filter((todo) => todo.id !== id));
-    // console.log(id)
+    setDB(DB.filter((todo) => todo.id !== id));
   };
 
   return (
@@ -71,6 +102,8 @@ const InputField = () => {
         handleChange={(e) => setInputValue(e.target.value)}
         isFieldEmpty={isFieldEmpty}
         handleSubmit={handleSubmit}
+        editBtn={editBtn}
+        handleEdit={handleEdit}
       />
 
       <div className='flex flex-col flex-1 md:px-[10%]'>
@@ -86,6 +119,9 @@ const InputField = () => {
               DB={filterTodo}
               completeTask={completeTask}
               deleteTodo={deleteTodo}
+              editTodo={editTodo}
+              editBtn={editBtn}
+              cancelEdit={cancelEdit}
             />
           </div>
         ) : (
