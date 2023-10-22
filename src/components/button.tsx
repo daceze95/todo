@@ -1,19 +1,31 @@
 interface propType {
   color?: string;
   bg?: string;
-  btnIsActive?: (number| string)[]
+  btnIsActive?: (number | string)[];
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   children: React.ReactNode;
+  deleteTodo?: () => void;
 }
 
-const Button = ({ color, bg, onClick, btnIsActive, children}: propType) => {
+const Button = ({
+  color,
+  bg,
+  onClick,
+  btnIsActive,
+  children,
+}: propType) => {
   return (
-    // ${btnIsActive && btnIsActive[0] == 1 && btnIsActive[1] === 'active' ? "border-blue": "border-black"}
     <button
-      className={`border ${btnIsActive?.[0] === btnIsActive?.[1] ? "border-black" : "border-slate-300"} py-2 px-5 w-full text-center bg-black font-bold ${color} ${bg}`}
+      className={`border border-black ${
+        btnIsActive?.[0] === btnIsActive?.[1]
+          ? 'border-slate-300'
+          : 'border-black'
+      } py-2 px-5 w-full text-center font-bold ${color} ${
+        bg != null ? bg : 'bg-black'
+      }`}
       onClick={onClick}>
       {children}
-</button>
+    </button>
   );
 };
 

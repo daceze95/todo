@@ -1,5 +1,5 @@
 import { subButtons } from '../constant';
-import { SetStateAction, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddItem from './AddItem';
 import ItemCard from './ItemCard';
 import NoTodo from './NoTodo';
@@ -9,39 +9,56 @@ import FilterButtons from './FilterButtons';
 const InputField = () => {
   const [inputValue, setInputValue] = useState('');
   const [activeBtn, setActiveBtn] = useState(1);
+  const [isFieldEmpty, setIsFieldEmpty] = useState(false);
   const [DB, setDB] = useState<
     { id: number; task: string; isCompleted: boolean }[]
-  >([]);
-
-  const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
-    setInputValue(e.target.value);
-  };
+  >(JSON.parse(localStorage.getItem('DataBase')) || []);
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    const newTodo = {
-      id: DB.length + 1,
-      task: inputValue.trim(),
-      isCompleted: false,
-    };
-    setDB([...DB, newTodo]);
-
-    setInputValue('');
+    if (inputValue.trim()) {
+      const newTodo = {
+        id: DB.length + 1,
+        task: inputValue,
+        isCompleted: false,
+      };
+      const result = [...DB, newTodo];
+      setIsFieldEmpty(false);
+      setDB(result);
+      setInputValue('');
+    } else {
+      setIsFieldEmpty(true);
+    }
   };
+
+  useEffect(() => {
+    localStorage.setItem('DataBase', JSON.stringify(DB));
+  }, [DB]);
 
   const completeTask = (id: number) => {
     const updatedTodos = DB.map((todo) =>
       todo.id === id ? { ...todo, isCompleted: true } : todo
     );
     setDB(updatedTodos);
+    localStorage.setItem('DataBase', JSON.stringify(updatedTodos));
   };
 
   const getTaskStatus = () => DB.filter((task) => task.isCompleted !== true);
-  // const getCompletedTask = () => DB.filter((task) => task.isCompleted === true);
 
-  const filterTodo = (active: number) => {
-    setActiveBtn(active);
+  const filterTodo = DB.filter((todo) => {
+    if (activeBtn === 2) {
+      return !todo.isCompleted;
+    } else if (activeBtn === 3) {
+      return todo.isCompleted;
+    }
+    return true;
+  });
+
+  const deleteTodo = (e: { preventDefault: () => void }, id: number) => {
+    e.preventDefault();
+     setDB(DB.filter((todo) => todo.id !== id));
+    // console.log(id)
   };
 
   return (
@@ -51,19 +68,25 @@ const InputField = () => {
       </h1>
       <AddItem
         inputValue={inputValue}
-        handleChange={handleChange}
+        handleChange={(e) => setInputValue(e.target.value)}
+        isFieldEmpty={isFieldEmpty}
         handleSubmit={handleSubmit}
       />
+
       <div className='flex flex-col flex-1 md:px-[10%]'>
         <FilterButtons
           subButtons={subButtons}
           active={activeBtn}
-          filterTodo={filterTodo}
+          filterTodo={setActiveBtn}
         />
         {DB.length ? (
           <div className='mt-4'>
             <SubHeader getTaskStatus={getTaskStatus} />
-            <ItemCard DB={DB} completeTask={completeTask} />
+            <ItemCard
+              DB={filterTodo}
+              completeTask={completeTask}
+              deleteTodo={deleteTodo}
+            />
           </div>
         ) : (
           <NoTodo />

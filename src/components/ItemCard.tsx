@@ -3,9 +3,10 @@ import Button from './button';
 interface ItemCardProp {
   DB: { id: number; task: string; isCompleted: boolean }[];
   completeTask: (id: number) => void;
+  deleteTodo: (e: { preventDefault: () => void }, id: number) => void;
 }
 
-const ItemCard = ({ DB, completeTask }: ItemCardProp) => {
+const ItemCard = ({ DB, completeTask, deleteTodo }: ItemCardProp) => {
   return (
     <div className='h-[380px] overflow-auto'>
       {DB.map((todo) => (
@@ -24,7 +25,10 @@ const ItemCard = ({ DB, completeTask }: ItemCardProp) => {
             <Button color={'text-black'} bg={'bg-white'}>
               Edit
             </Button>
-            <Button color={'text-white'} bg={'bg-red-500'}>
+            <Button
+              color={'text-white'}
+              bg={'bg-red-500'}
+              onClick={(e) => deleteTodo(e, todo.id)}>
               Delete
             </Button>
           </div>
