@@ -7,6 +7,7 @@ interface ItemCardProp {
   editTodo: (e: { preventDefault: () => void }, id: number) => void;
   editBtn: boolean;
   cancelEdit: (e: { preventDefault: () => void }, id: number) => void;
+  todoId: number;
 }
 
 const ItemCard = ({
@@ -15,8 +16,10 @@ const ItemCard = ({
   deleteTodo,
   editTodo,
   editBtn,
-  cancelEdit
+  cancelEdit,
+  todoId,
 }: ItemCardProp) => {
+  // console.log(todoId)
   return (
     <div className='h-[380px] overflow-auto'>
       {DB.map((todo) => (
@@ -39,12 +42,19 @@ const ItemCard = ({
                 onClick={(e) => editTodo(e, todo.id)}>
                 Edit
               </Button>
-            ) : (
+            ) : todoId === todo.id ? (
               <Button
                 color={'text-black'}
                 bg={'bg-white'}
                 onClick={(e) => cancelEdit(e, todo.id)}>
                 Cancel Edit
+              </Button>
+            ) : (
+              <Button
+                color={'text-black'}
+                bg={'bg-white'}
+                onClick={(e) => editTodo(e, todo.id)}>
+                Edit
               </Button>
             )}
             <Button

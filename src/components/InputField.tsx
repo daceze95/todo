@@ -121,6 +121,7 @@ const InputField = () => {
               deleteTodo={deleteTodo}
               editTodo={editTodo}
               editBtn={editBtn}
+              todoId={todoId}
               cancelEdit={cancelEdit}
             />
           </div>
