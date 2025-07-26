@@ -12,7 +12,12 @@ const InputField = () => {
   const [editBtn, setEditBtn] = useState(false);
   const [todoId, setTodoId] = useState(0);
   const [isFieldEmpty, setIsFieldEmpty] = useState(false);
-  const [DB, setDB] = useState<{ id: number; task: string; isCompleted: boolean }[]>(JSON.parse(localStorage.getItem('DataBase')) || []);
+  // const [DB, setDB] = useState<{ id: number; task: string; isCompleted: boolean }[]>(JSON.parse(localStorage.getItem('DataBase')) || []);
+  const [DB, setDB] = useState<{ id: number; task: string; isCompleted: boolean }[]>(() => {
+  const data = localStorage.getItem('DataBase');
+  return data ? JSON.parse(data) : [];
+});
+
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
