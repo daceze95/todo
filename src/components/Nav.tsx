@@ -1,4 +1,5 @@
 import LogoutButton from '../components/LogoutButton';
+import { getCurrentUser } from '../utils/auth';
 const Nav = () => {
   const style = {
     backgroundColor: '#000',
@@ -19,12 +20,17 @@ const Nav = () => {
     padding: "2px 10px",
     marginRight: "auto"
   };
+
+  const user = getCurrentUser();
+
+  if (!user) return;
+
   return (
     <div style={style}>
       <span style={logoStyle}>TODO</span>
-      {/* <span className=''>
-
-      </span> */}
+      <span className='mr-4 text-2xl'>
+       {user.firstName}
+      </span>
       <LogoutButton/>
     </div>
   );

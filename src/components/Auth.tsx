@@ -1,33 +1,37 @@
-import React, { useState } from 'react';
-import { signup, signin } from '../utils/auth';
-import { useNavigate } from 'react-router-dom'; // ✅
+import React, { useState } from "react";
+import { signup, signin } from "../utils/auth";
+import { useNavigate } from "react-router-dom"; // ✅
 
 const Auth = () => {
   const navigate = useNavigate(); // ✅
   const [isSignup, setIsSignup] = useState(true);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!username || !password) {
-      setMessage('Username and password required');
+      setMessage("Username and password required");
       return;
     }
 
-    const error = isSignup ? signup(username, password) : signin(username, password);
+    const error = isSignup
+      ? signup(username, password, firstname, lastname)
+      : signin(username, password);
 
     if (error) {
       setMessage(error);
     } else {
-      setMessage('');
+      setMessage("");
       // ✅ Navigate to home after successful sign-in
       if (!isSignup) {
-        navigate('/');
+        navigate("/");
       } else {
-        setMessage('Signup successful! Please sign in.');
+        setMessage("Signup successful! Please sign in.");
         setIsSignup(false); // Switch to signin after signup
       }
     }
@@ -35,8 +39,28 @@ const Auth = () => {
 
   return (
     <div className="w-1/2 mx-auto mt-8">
-      <h2 className="text-2xl mb-4 text-center">{isSignup ? 'Sign Up' : 'Sign In'}</h2>
+      <h2 className="text-2xl mb-4 text-center">
+        {isSignup ? "Sign Up" : "Sign In"}
+      </h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {isSignup ? (
+          <>
+            <input
+              placeholder="First Name"
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
+              className="border px-3 py-2"
+            />
+            <input
+              placeholder="Last Name"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+              className="border px-3 py-2"
+            />
+          </>
+        ) : (
+          ""
+        )}
         <input
           placeholder="Username"
           value={username}
@@ -51,18 +75,18 @@ const Auth = () => {
           className="border px-3 py-2"
         />
         <button className="bg-black text-white px-4 py-2" type="submit">
-          {isSignup ? 'Sign Up' : 'Sign In'}
+          {isSignup ? "Sign Up" : "Sign In"}
         </button>
       </form>
       {message && <p className="text-red-500 mt-2">{message}</p>}
       <button
         onClick={() => {
           setIsSignup(!isSignup);
-          setMessage('');
+          setMessage("");
         }}
         className="mt-4 underline text-sm text-blue-600"
       >
-        Switch to {isSignup ? 'Sign In' : 'Sign Up'}
+        Switch to {isSignup ? "Sign In" : "Sign Up"}
       </button>
     </div>
   );

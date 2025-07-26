@@ -15,12 +15,12 @@ const saveUsers = (users: User[]) => {
 };
 
 // Sign up
-export const signup = (username: string, password: string): string | null => {
+export const signup = (username: string, password: string, firstName: string, lastName: string): string | null => {
   const users = getUsers();
   const existing = users.find((u) => u.username === username);
   if (existing) return 'User already exists';
 
-  users.push({ username, password });
+  users.push({ username, password, firstName, lastName });
   saveUsers(users);
   return null;
 };
@@ -37,11 +37,11 @@ export const signin = (username: string, password: string): string | null => {
 
 // Sign out
 export const signout = () => {
-  localStorage.removeItem('AuthenticatedUser');
+  localStorage.removeItem(AUTH_USER_KEY);
 };
 
 // Get logged-in user
 export const getCurrentUser = (): User | null => {
-  const user = localStorage.getItem('AuthenticatedUser');
+  const user = localStorage.getItem(AUTH_USER_KEY);
   return user ? JSON.parse(user) : null;
 };
