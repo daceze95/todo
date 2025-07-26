@@ -50,7 +50,7 @@ const Auth = () => {
           onChange={(e) => setPassword(e.target.value)}
           className="border px-3 py-2"
         />
-        <button className="bg-blue-500 text-white px-4 py-2" type="submit">
+        <button className="bg-black text-white px-4 py-2" type="submit">
           {isSignup ? 'Sign Up' : 'Sign In'}
         </button>
       </form>
